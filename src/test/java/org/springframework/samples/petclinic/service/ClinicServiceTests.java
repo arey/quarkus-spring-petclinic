@@ -16,27 +16,26 @@
 
 package org.springframework.samples.petclinic.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
 
+import io.quarkus.test.TestTransaction;
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.h2.H2DatabaseTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.samples.petclinic.owner.Owner;
-import org.springframework.samples.petclinic.owner.OwnerRepository;
-import org.springframework.samples.petclinic.owner.Pet;
-import org.springframework.samples.petclinic.owner.PetType;
-import org.springframework.samples.petclinic.owner.Visit;
+import org.springframework.samples.petclinic.owner.*;
 import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.samples.petclinic.vet.VetRepository;
-import org.springframework.transaction.annotation.Transactional;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 
 /**
  * Integration test of the Service and the Repository layer.
@@ -66,42 +65,43 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Michael Isvy
  * @author Dave Syer
  */
-@DataJpaTest
-// Ensure that if the mysql profile is active we connect to the real database:
-@AutoConfigureTestDatabase(replace = Replace.NONE)
-// @TestPropertySource("/application-postgres.properties")
+@QuarkusTest
+@QuarkusTestResource(H2DatabaseTestResource.class)
 class ClinicServiceTests {
 
 	@Autowired
 	protected OwnerRepository owners;
 
 	@Autowired
+	protected PetTypeRepository petTypes;
+
+	@Autowired
 	protected VetRepository vets;
 
-	Pageable pageable;
+	Pageable pageable = Pageable.unpaged();
 
 	@Test
 	void shouldFindOwnersByLastName() {
 		Page<Owner> owners = this.owners.findByLastNameStartingWith("Davis", pageable);
-		assertThat(owners).hasSize(2);
+		assertThat(owners.getSize(), is(equalTo(2)));
 
 		owners = this.owners.findByLastNameStartingWith("Daviss", pageable);
-		assertThat(owners).isEmpty();
+		assertThat(owners.isEmpty(), is(true));
 	}
 
 	@Test
 	void shouldFindSingleOwnerWithPet() {
 		Optional<Owner> optionalOwner = this.owners.findById(1);
-		assertThat(optionalOwner).isPresent();
+		assertThat(optionalOwner.isPresent(), is(true));
 		Owner owner = optionalOwner.get();
-		assertThat(owner.getLastName()).startsWith("Franklin");
-		assertThat(owner.getPets()).hasSize(1);
-		assertThat(owner.getPets().get(0).getType()).isNotNull();
-		assertThat(owner.getPets().get(0).getType().getName()).isEqualTo("cat");
+		assertThat(owner.getLastName(), startsWith("Franklin"));
+		assertThat(owner.getPets(), hasSize(1));
+		assertThat(owner.getPets().get(0).getType(), notNullValue());
+		assertThat(owner.getPets().get(0).getType().getName(), is(equalTo("cat")));
 	}
 
 	@Test
-	@Transactional
+	@TestTransaction
 	void shouldInsertOwner() {
 		Page<Owner> owners = this.owners.findByLastNameStartingWith("Schultz", pageable);
 		int found = (int) owners.getTotalElements();
@@ -113,17 +113,17 @@ class ClinicServiceTests {
 		owner.setCity("Wollongong");
 		owner.setTelephone("4444444444");
 		this.owners.save(owner);
-		assertThat(owner.getId()).isNotZero();
+		assertThat(owner.getId(), is(not(0)));
 
 		owners = this.owners.findByLastNameStartingWith("Schultz", pageable);
-		assertThat(owners.getTotalElements()).isEqualTo(found + 1);
+		assertThat(owners.getTotalElements(), is(equalTo(found + 1L)));
 	}
 
 	@Test
-	@Transactional
+	@TestTransaction
 	void shouldUpdateOwner() {
 		Optional<Owner> optionalOwner = this.owners.findById(1);
-		assertThat(optionalOwner).isPresent();
+		assertThat(optionalOwner.isPresent(), is(true) );
 		Owner owner = optionalOwner.get();
 		String oldLastName = owner.getLastName();
 		String newLastName = oldLastName + "X";
@@ -133,54 +133,54 @@ class ClinicServiceTests {
 
 		// retrieving new name from database
 		optionalOwner = this.owners.findById(1);
-		assertThat(optionalOwner).isPresent();
+		assertThat(optionalOwner.isPresent(), is(true));
 		owner = optionalOwner.get();
-		assertThat(owner.getLastName()).isEqualTo(newLastName);
+		assertThat(owner.getLastName(), is(newLastName));
 	}
 
 	@Test
 	void shouldFindAllPetTypes() {
-		Collection<PetType> petTypes = this.owners.findPetTypes();
+		Collection<PetType> petTypes = this.petTypes.findAll();
 
 		PetType petType1 = EntityUtils.getById(petTypes, PetType.class, 1);
-		assertThat(petType1.getName()).isEqualTo("cat");
+		assertThat(petType1.getName(), is(equalTo("cat")));
 		PetType petType4 = EntityUtils.getById(petTypes, PetType.class, 4);
-		assertThat(petType4.getName()).isEqualTo("snake");
+		assertThat(petType4.getName(), is(equalTo("snake")));
 	}
 
 	@Test
-	@Transactional
+	@TestTransaction
 	void shouldInsertPetIntoDatabaseAndGenerateId() {
 		Optional<Owner> optionalOwner = this.owners.findById(6);
-		assertThat(optionalOwner).isPresent();
+		assertThat(optionalOwner.isPresent(), is(true));
 		Owner owner6 = optionalOwner.get();
 
 		int found = owner6.getPets().size();
 
 		Pet pet = new Pet();
 		pet.setName("bowser");
-		Collection<PetType> types = this.owners.findPetTypes();
+		Collection<PetType> types = this.petTypes.findAll();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
 		owner6.addPet(pet);
-		assertThat(owner6.getPets()).hasSize(found + 1);
+		assertThat(owner6.getPets(), hasSize(found + 1));
 
 		this.owners.save(owner6);
 
 		optionalOwner = this.owners.findById(6);
-		assertThat(optionalOwner).isPresent();
+		assertThat(optionalOwner.isPresent(), is(true));
 		owner6 = optionalOwner.get();
-		assertThat(owner6.getPets()).hasSize(found + 1);
+		assertThat(owner6.getPets(), hasSize(found + 1));
 		// checks that id has been generated
 		pet = owner6.getPet("bowser");
-		assertThat(pet.getId()).isNotNull();
+		assertThat(pet.getId(), is(notNullValue()));
 	}
 
 	@Test
-	@Transactional
+	@TestTransaction
 	void shouldUpdatePetName() {
 		Optional<Owner> optionalOwner = this.owners.findById(6);
-		assertThat(optionalOwner).isPresent();
+		assertThat(optionalOwner.isPresent(), is(true));
 		Owner owner6 = optionalOwner.get();
 
 		Pet pet7 = owner6.getPet(7);
@@ -191,10 +191,10 @@ class ClinicServiceTests {
 		this.owners.save(owner6);
 
 		optionalOwner = this.owners.findById(6);
-		assertThat(optionalOwner).isPresent();
+		assertThat(optionalOwner.isPresent(), is(true));
 		owner6 = optionalOwner.get();
 		pet7 = owner6.getPet(7);
-		assertThat(pet7.getName()).isEqualTo(newName);
+		assertThat(pet7.getName(), is(equalTo(newName)));
 	}
 
 	@Test
@@ -202,17 +202,17 @@ class ClinicServiceTests {
 		Collection<Vet> vets = this.vets.findAll();
 
 		Vet vet = EntityUtils.getById(vets, Vet.class, 3);
-		assertThat(vet.getLastName()).isEqualTo("Douglas");
-		assertThat(vet.getNrOfSpecialties()).isEqualTo(2);
-		assertThat(vet.getSpecialties().get(0).getName()).isEqualTo("dentistry");
-		assertThat(vet.getSpecialties().get(1).getName()).isEqualTo("surgery");
+		assertThat(vet.getLastName(), is(equalTo("Douglas")));
+		assertThat(vet.getNrOfSpecialties(), is(equalTo(2)));
+		assertThat(vet.getSpecialties().get(0).getName(), is(equalTo("dentistry")));
+		assertThat(vet.getSpecialties().get(1).getName(), is(equalTo("surgery")));
 	}
 
 	@Test
-	@Transactional
+	@TestTransaction
 	void shouldAddNewVisitForPet() {
 		Optional<Owner> optionalOwner = this.owners.findById(6);
-		assertThat(optionalOwner).isPresent();
+		assertThat(optionalOwner.isPresent(), is(true));
 		Owner owner6 = optionalOwner.get();
 
 		Pet pet7 = owner6.getPet(7);
@@ -223,25 +223,22 @@ class ClinicServiceTests {
 		owner6.addVisit(pet7.getId(), visit);
 		this.owners.save(owner6);
 
-		assertThat(pet7.getVisits()) //
-			.hasSize(found + 1) //
-			.allMatch(value -> value.getId() != null);
+		assertThat(pet7.getVisits(), hasSize(found + 1));
+		assertThat(pet7.getVisits(), everyItem(hasProperty("id", notNullValue())));
 	}
 
 	@Test
 	void shouldFindVisitsByPetId() {
 		Optional<Owner> optionalOwner = this.owners.findById(6);
-		assertThat(optionalOwner).isPresent();
+		assertThat(optionalOwner.isPresent(), is(true));
 		Owner owner6 = optionalOwner.get();
 
 		Pet pet7 = owner6.getPet(7);
 		Collection<Visit> visits = pet7.getVisits();
 
-		assertThat(visits) //
-			.hasSize(2) //
-			.element(0)
-			.extracting(Visit::getDate)
-			.isNotNull();
+		assertThat(visits, hasSize(2));
+		assertThat(visits.iterator().next().getDate(), is(notNullValue()));
 	}
+
 
 }
