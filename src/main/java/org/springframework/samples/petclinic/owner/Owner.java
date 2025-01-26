@@ -18,7 +18,6 @@ package org.springframework.samples.petclinic.owner;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.core.style.ToStringCreator;
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.util.Assert;
 
@@ -145,14 +144,15 @@ public class Owner extends Person {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("id", this.getId())
-			.append("new", this.isNew())
-			.append("lastName", this.getLastName())
-			.append("firstName", this.getFirstName())
-			.append("address", this.address)
-			.append("city", this.city)
-			.append("telephone", this.telephone)
-			.toString();
+		return "Owner{" +
+			"new=" + isNew() + '\'' +
+			", lastName='" + getLastName() + '\'' +
+			", firstName='" + getFirstName() + '\'' +
+			", address='" + address + '\'' +
+			", city='" + city + '\'' +
+			", telephone='" + telephone + '\'' +
+			", pets=" + pets +
+			'}';
 	}
 
 	/**
