@@ -16,15 +16,23 @@
 
 package org.springframework.samples.petclinic.system;
 
-import org.springframework.stereotype.Controller;
+import io.quarkus.qute.Template;
+import io.quarkus.qute.TemplateInstance;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 class WelcomeController {
 
+	private final Template welcome;
+
+	WelcomeController(Template welcome) {
+		this.welcome = welcome;
+	}
+
 	@GetMapping("/")
-	public String welcome() {
-		return "welcome";
+	public TemplateInstance welcome() {
+		return welcome.instance();
 	}
 
 }
