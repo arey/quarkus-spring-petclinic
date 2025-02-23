@@ -26,11 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.samples.petclinic.system.I18nHelper;
 import org.springframework.samples.petclinic.system.Result;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 /**
@@ -42,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Antoine Rey
  */
 @RestController
+@RequestMapping("/owners")
 class OwnerController {
 
 	private final OwnerRepository owners;
@@ -60,12 +57,12 @@ class OwnerController {
 							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
 	}
 
-	@GetMapping("/owners/new")
+	@GetMapping("/new")
 	public TemplateInstance initCreationForm() {
 		return OwnerTemplates.createOrUpdateOwnerForm(new Owner(), Result.empty());
 	}
 
-	@PostMapping("/owners/new")
+	@PostMapping("/new")
 	public TemplateInstance processCreationForm(Owner owner) {
 		Result result = Result.from(validator.validate(owner));
 		if (result.hasErrors()) {
@@ -76,12 +73,12 @@ class OwnerController {
 		return OwnerTemplates.ownerDetails(owner, Result.success("New Owner Created"));
 	}
 
-	@GetMapping("/owners/find")
+	@GetMapping("/find")
 	public TemplateInstance initFindForm() {
 		return OwnerTemplates.findOwners(List.of());
 	}
 
-	@GetMapping("/owners")
+	@GetMapping("/")
 	public TemplateInstance processFindForm(@RequestParam(defaultValue = "1") int page, @RequestParam String lastName,
 											@HeaderParam("Accept-Language") String language) {
 		// allow parameterless GET request for /owners to return all records
@@ -113,13 +110,13 @@ class OwnerController {
 		return owners.findByLastNameStartingWith(lastname, pageable);
 	}
 
-	@GetMapping("/owners/{ownerId}/edit")
+	@GetMapping("/{ownerId}/edit")
 	public TemplateInstance initUpdateOwnerForm(@PathVariable("ownerId") int ownerId) {
 		Owner owner = findOwner(ownerId);
 		return OwnerTemplates.createOrUpdateOwnerForm(owner, Result.empty());
 	}
 
-	@PostMapping("/owners/{ownerId}/edit")
+	@PostMapping("/{ownerId}/edit")
 	public TemplateInstance processUpdateOwnerForm(Owner owner, @PathVariable("ownerId") Integer ownerId) {
 		Result result = Result.from(validator.validate(owner));
 		if (result.hasErrors()) {
@@ -136,7 +133,7 @@ class OwnerController {
 	 * @param ownerId the ID of the owner to display
 	 * @return a ModelMap with the model attributes for the view
 	 */
-	@GetMapping("/owners/{ownerId}")
+	@GetMapping("/{ownerId}")
 	public TemplateInstance showOwner(@PathVariable("ownerId") int ownerId) {
 		Optional<Owner> optionalOwner = this.owners.findById(ownerId);
 		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
