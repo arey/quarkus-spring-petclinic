@@ -92,9 +92,17 @@ public class Owner extends Person {
 		return this.pets;
 	}
 
-	public void addPet(Pet pet) {
-		if (pet.isNew()) {
+	/**
+	 * See the <a href="https://github.com/spring-projects/spring-petclinic/pull/1765">GitHub discussion</a>.
+	 */
+	public void registerPet(Pet pet) {
+		Pet existingPet = getPet(pet.getId());
+		if (existingPet == null) {
 			getPets().add(pet);
+		} else {
+			existingPet.setName(pet.getName());
+			existingPet.setBirthDate(pet.getBirthDate());
+			existingPet.setType(pet.getType());
 		}
 	}
 
