@@ -1,0 +1,17 @@
+{#let invalid = result.hasErrors(name)}
+  <div class="form-group {#if invalid} has-error {/if}">
+    <label for="{name}" class="col-sm-2 control-label">{it}</label>
+
+    <div class="col-sm-10">
+      <select id="{name}" name="{name}">
+        {#for item in items}
+          <option value="{item}" {#if field eq item} selected {/if}>{item}</option>
+        {/for}
+      </select>
+      <span class="fa {#if invalid}fa-remove{#else}fa-ok{/if} form-control-feedback" aria-hidden="true"></span>
+      {#if invalid}
+        <span class="help-inline">{result.getErrorMessage(name)}</span>
+      {/if}
+    </div>
+  </div>
+{/let}
