@@ -15,48 +15,45 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.Formatter;
+import jakarta.ws.rs.ext.ParamConverter;
 import org.springframework.stereotype.Component;
 
-import java.text.ParseException;
 import java.util.Collection;
-import java.util.Locale;
 
 /**
- * Instructs Spring MVC on how to parse and print elements of type 'PetType'. Starting
- * from Spring 3.0, Formatters have come as an improvement in comparison to legacy
- * PropertyEditors. See the following links for more details: - The Spring ref doc:
- * https://docs.spring.io/spring-framework/docs/current/spring-framework-reference/core.html#format
+ * Instructs JAX-RS on how to parse and print elements of type 'PetType'.
+ * This class implements the ParamConverter interface from JAX-RS.
+ * <p>
+ * Previously, this class was used in a Spring MVC context as a Formatter.
+ * It has been migrated to Quarkus and now implements the JAX-RS ParamConverter interface.
  *
  * @author Mark Fisher
  * @author Juergen Hoeller
  * @author Michael Isvy
  */
 @Component
-public class PetTypeFormatter implements Formatter<PetType> {
+public class PetTypeFormatter implements ParamConverter<PetType> {
 
-	private final OwnerRepository owners;
+	private final PetTypeRepository petTypes;
 
-	@Autowired
-	public PetTypeFormatter(OwnerRepository owners) {
-		this.owners = owners;
+	public PetTypeFormatter(PetTypeRepository petTypes) {
+		this.petTypes = petTypes;
 	}
 
 	@Override
-	public String print(PetType petType, Locale locale) {
+	public String toString(PetType petType) {
 		return petType.getName();
 	}
 
 	@Override
-	public PetType parse(String text, Locale locale) throws ParseException {
-		Collection<PetType> findPetTypes = this.owners.findPetTypes();
+	public PetType fromString(String text) {
+		Collection<PetType> findPetTypes = this.petTypes.findAllByOrderByName();
 		for (PetType type : findPetTypes) {
 			if (type.getName().equals(text)) {
 				return type;
 			}
 		}
-		throw new ParseException("type not found: " + text, 0);
+		throw new IllegalArgumentException("type not found: " + text);
 	}
 
 }

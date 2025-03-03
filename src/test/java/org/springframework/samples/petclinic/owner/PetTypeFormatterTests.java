@@ -16,14 +16,14 @@
 
 package org.springframework.samples.petclinic.owner;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +43,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class PetTypeFormatterTests {
 
 	@Mock
-	private OwnerRepository pets;
+	private PetTypeRepository pets;
 
 	private PetTypeFormatter petTypeFormatter;
 
@@ -56,22 +56,22 @@ class PetTypeFormatterTests {
 	void testPrint() {
 		PetType petType = new PetType();
 		petType.setName("Hamster");
-		String petTypeName = this.petTypeFormatter.print(petType, Locale.ENGLISH);
-		assertThat(petTypeName).isEqualTo("Hamster");
+		String petTypeName = this.petTypeFormatter.toString(petType);
+		assertThat(petTypeName, is(equalTo("Hamster")));
 	}
 
 	@Test
-	void shouldParse() throws ParseException {
-		given(this.pets.findPetTypes()).willReturn(makePetTypes());
-		PetType petType = petTypeFormatter.parse("Bird", Locale.ENGLISH);
-		assertThat(petType.getName()).isEqualTo("Bird");
+	void shouldParse() {
+		given(this.pets.findAllByOrderByName()).willReturn(makePetTypes());
+		PetType petType = petTypeFormatter.fromString("Bird");
+		assertThat(petType.getName(), is(equalTo("Bird")));
 	}
 
 	@Test
-	void shouldThrowParseException() {
-		given(this.pets.findPetTypes()).willReturn(makePetTypes());
-		Assertions.assertThrows(ParseException.class, () -> {
-			petTypeFormatter.parse("Fish", Locale.ENGLISH);
+	void shouldThrowIllegalArgumentException() {
+		given(this.pets.findAllByOrderByName()).willReturn(makePetTypes());
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			petTypeFormatter.fromString("Fish");
 		});
 	}
 
