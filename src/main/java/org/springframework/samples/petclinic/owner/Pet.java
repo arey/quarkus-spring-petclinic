@@ -20,7 +20,8 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import jakarta.validation.constraints.NotNull;
+import jakarta.ws.rs.FormParam;
 import org.springframework.samples.petclinic.model.NamedEntity;
 
 import jakarta.persistence.CascadeType;
@@ -46,11 +47,14 @@ import jakarta.persistence.Table;
 public class Pet extends NamedEntity {
 
 	@Column(name = "birth_date")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@FormParam("birthDate")
+	@NotNull
 	private LocalDate birthDate;
 
 	@ManyToOne
 	@JoinColumn(name = "type_id")
+	@FormParam("type")
+	@NotNull
 	private PetType type;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)

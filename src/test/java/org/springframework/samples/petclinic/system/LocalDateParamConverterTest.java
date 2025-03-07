@@ -6,7 +6,6 @@ import java.time.LocalDate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class LocalDateParamConverterTest {
 
@@ -21,10 +20,7 @@ class LocalDateParamConverterTest {
 
 	@Test
 	void testFromStringInvalidDate() {
-		IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-			converter.fromString("invalid-date");
-		});
-		assertThat(exception.getMessage(), containsString("Invalid date format"));
+		assertThat(converter.fromString("invalid-date"), is(nullValue()));
 	}
 
 	@Test

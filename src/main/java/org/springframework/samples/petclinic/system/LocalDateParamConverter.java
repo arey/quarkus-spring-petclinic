@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.system;
 
 import jakarta.ws.rs.ext.ParamConverter;
+import org.jboss.logging.Logger;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -12,6 +13,9 @@ public class LocalDateParamConverter implements ParamConverter<LocalDate> {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE;
 
+	// Declare a slf4j logger
+	private static final Logger LOG = Logger.getLogger(LocalDateParamConverter.class);
+
     @Override
     public LocalDate fromString(String value) {
         if (value == null || value.isEmpty()) {
@@ -20,7 +24,8 @@ public class LocalDateParamConverter implements ParamConverter<LocalDate> {
         try {
             return LocalDate.parse(value, FORMATTER);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Invalid date format", e);
+			LOG.warn("Invalid date format", e);
+			return null;
         }
     }
 
