@@ -1,33 +1,28 @@
-<html xmlns:th="https://www.thymeleaf.org"
-  th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
+{#include fragments/layout}
 
 <body>
 
   <h2>
-    <th:block th:if="${pet['new']}">New </th:block>
+    {#if pet.isNew()}New {/if}
     Pet
   </h2>
-  <form th:object="${pet}" class="form-horizontal" method="post">
-    <input type="hidden" name="id" th:value="*{id}" />
+  <form class="form-horizontal" method="post">
+    <input type="hidden" name="id" value="{pet.id}" />
     <div class="form-group has-feedback">
       <div class="form-group">
         <label class="col-sm-2 control-label">Owner</label>
         <div class="col-sm-10">
-          <span th:text="${owner?.firstName + ' ' + owner?.lastName}" />
+          <span>{owner.firstName} {owner.lastName}</span>
         </div>
       </div>
-      <input
-        th:replace="~{fragments/inputField :: input ('Name', 'name', 'text')}" />
-      <input
-        th:replace="~{fragments/inputField :: input ('Birth Date', 'birthDate', 'date')}" />
-      <input
-        th:replace="~{fragments/selectField :: select ('Type', 'type', ${types})}" />
+       {#inputField 'Name' name='name' type='text' result=result field=pet.name /}
+       {#inputField 'Birth Date' name='birthDate' type='date' result=result field=pet.birthDate /}
+       {#selectField 'Type' name='type' items=petTypes result=result field=pet.type /}
     </div>
     <div class="form-group">
       <div class="col-sm-offset-2 col-sm-10">
         <button
-          th:with="text=${pet['new']} ? 'Add Pet' : 'Update Pet'"
-          class="btn btn-primary" type="submit" th:text="${text}">Add
+            class="btn btn-primary" type="submit">{#if pet.isNew()}Add {#else}Update{/if}
           Pet</button>
       </div>
     </div>
@@ -35,4 +30,4 @@
 
 </body>
 
-</html>
+{/include}
