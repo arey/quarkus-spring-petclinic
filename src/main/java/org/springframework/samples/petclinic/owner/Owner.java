@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.owner;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.ws.rs.FormParam;
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.util.Assert;
 
@@ -48,15 +49,18 @@ public class Owner extends Person {
 
 	@Column(name = "address")
 	@NotBlank
+	@FormParam("address")
 	private String address;
 
 	@Column(name = "city")
 	@NotBlank
+	@FormParam("city")
 	private String city;
 
 	@Column(name = "telephone")
 	@NotBlank
 	@Pattern(regexp = "\\d{10}", message = "Telephone must be a 10-digit number")
+	@FormParam("telephone")
 	private String telephone;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -178,6 +182,10 @@ public class Owner extends Person {
 		Assert.notNull(pet, "Invalid Pet identifier!");
 
 		pet.addVisit(visit);
+	}
+
+	public String getPetNames() {
+		return String.join(", ", getPets().stream().map(Pet::getName).toArray(String[]::new));
 	}
 
 }
