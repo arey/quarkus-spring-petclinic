@@ -6,7 +6,7 @@
     {#if pet.isNew()}New {/if}
     Pet
   </h2>
-  <form class="form-horizontal" method="post">
+  <form class="form-horizontal" id="add-pet-form" method="post">
     <input type="hidden" name="id" value="{pet.id}" />
     <div class="form-group has-feedback">
       <div class="form-group">

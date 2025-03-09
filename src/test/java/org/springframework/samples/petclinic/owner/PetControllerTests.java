@@ -16,28 +16,23 @@
 
 package org.springframework.samples.petclinic.owner;
 
-import org.assertj.core.util.Lists;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledInNativeImage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.test.context.aot.DisabledInAotMode;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 /**
  * Test class for the {@link PetController}
@@ -45,164 +40,179 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Colin But
  * @author Wick Dynex
  */
-@WebMvcTest(value = PetController.class,
-		includeFilters = @ComponentScan.Filter(value = PetTypeFormatter.class, type = FilterType.ASSIGNABLE_TYPE))
-@DisabledInNativeImage
-@DisabledInAotMode
+@QuarkusTest
+@TestHTTPEndpoint(PetController.class)
 class PetControllerTests {
 
 	private static final int TEST_OWNER_ID = 1;
 
 	private static final int TEST_PET_ID = 1;
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@MockitoBean
+	@InjectMock
 	private OwnerRepository owners;
+
+	@InjectMock
+	private PetTypeRepository petTypes;
+
+	Owner owner = new Owner();
 
 	@BeforeEach
 	void setup() {
 		PetType cat = new PetType();
 		cat.setId(3);
 		cat.setName("hamster");
-		given(this.owners.findPetTypes()).willReturn(Lists.newArrayList(cat));
+		given(this.petTypes.findAllByOrderByName()).willReturn(List.of(cat));
 
-		Owner owner = new Owner();
+		owner.setFirstName("George");
+		owner.setLastName("Franklin");
 		Pet pet = new Pet();
 		Pet dog = new Pet();
-		owner.addPet(pet);
-		owner.addPet(dog);
+		owner.registerPet(pet);
+		owner.registerPet(dog);
 		pet.setId(TEST_PET_ID);
 		dog.setId(TEST_PET_ID + 1);
 		pet.setName("petty");
+		pet.setBirthDate(LocalDate.of(2025,3,9));
 		dog.setName("doggy");
+		dog.setBirthDate(LocalDate.of(2025,2,23));
 		given(this.owners.findById(TEST_OWNER_ID)).willReturn(Optional.of(owner));
 	}
 
 	@Test
-	void testInitCreationForm() throws Exception {
-		mockMvc.perform(get("/owners/{ownerId}/pets/new", TEST_OWNER_ID))
-			.andExpect(status().isOk())
-			.andExpect(view().name("pets/createOrUpdatePetForm"))
-			.andExpect(model().attributeExists("pet"));
+	void testInitCreationForm() {
+		when().get("/new", TEST_OWNER_ID)
+			.then()
+			.statusCode(200)
+			.contentType(ContentType.HTML)
+			.body("html.body.form.@id", is("add-pet-form"));
 	}
 
 	@Test
-	void testProcessCreationFormSuccess() throws Exception {
-		mockMvc
-			.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
-				.param("type", "hamster")
-				.param("birthDate", "2015-02-12"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/owners/{ownerId}"));
+	void testProcessCreationFormSuccess() {
+		given(this.owners.save(owner)).willReturn(owner);
+		given()
+			.param("name", "Betty")
+			.param("type", "hamster")
+			.param("birthDate", "2015-02-12")
+			.when()
+			.post("/new", TEST_OWNER_ID)
+			.then()
+			.statusCode(200)
+			.body("html.body.div.span", is("New Pet has been Added"));
 	}
 
 	@Nested
 	class ProcessCreationFormHasErrors {
 
 		@Test
-		void testProcessCreationFormWithBlankName() throws Exception {
-			mockMvc
-				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "\t \n")
-					.param("birthDate", "2015-02-12"))
-				.andExpect(model().attributeHasNoErrors("owner"))
-				.andExpect(model().attributeHasErrors("pet"))
-				.andExpect(model().attributeHasFieldErrors("pet", "name"))
-				.andExpect(model().attributeHasFieldErrorCode("pet", "name", "required"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("pets/createOrUpdatePetForm"));
+		void testProcessCreationFormWithBlankName() {
+			given()
+				.param("name", "\t \n")
+				.param("birthDate", "2015-02-12")
+				.when()
+				.post("/owners/{ownerId}/pets/new", TEST_OWNER_ID)
+				.then()
+				.statusCode(200)
+				.body("html.body.form.@id", is("add-pet-form"))
+				.body(containsString("must not be blank"));
 		}
 
 		@Test
-		void testProcessCreationFormWithDuplicateName() throws Exception {
-			mockMvc
-				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "petty")
-					.param("birthDate", "2015-02-12"))
-				.andExpect(model().attributeHasNoErrors("owner"))
-				.andExpect(model().attributeHasErrors("pet"))
-				.andExpect(model().attributeHasFieldErrors("pet", "name"))
-				.andExpect(model().attributeHasFieldErrorCode("pet", "name", "duplicate"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("pets/createOrUpdatePetForm"));
+		void testProcessCreationFormWithDuplicateName() {
+			given()
+				.param("name", "petty")
+				.param("birthDate", "2015-02-12")
+				.param("type", "hamster")
+				.when()
+				.post("/owners/{ownerId}/pets/new", TEST_OWNER_ID)
+				.then()
+				.statusCode(200)
+				.body("html.body.form.@id", is("add-pet-form"))
+				.body(containsString("is already in use"));
 		}
 
 		@Test
-		void testProcessCreationFormWithMissingPetType() throws Exception {
-			mockMvc
-				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
-					.param("birthDate", "2015-02-12"))
-				.andExpect(model().attributeHasNoErrors("owner"))
-				.andExpect(model().attributeHasErrors("pet"))
-				.andExpect(model().attributeHasFieldErrors("pet", "type"))
-				.andExpect(model().attributeHasFieldErrorCode("pet", "type", "required"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("pets/createOrUpdatePetForm"));
+		void testProcessCreationFormWithMissingPetType() {
+			given()
+				.param("name", "Betty")
+				.param("birthDate", "2015-02-12")
+				.when()
+				.post("/owners/{ownerId}/pets/new", TEST_OWNER_ID)
+				.then()
+				.statusCode(200)
+				.body("html.body.form.@id", is("add-pet-form"))
+				.body(containsString("must not be null"));
 		}
 
 		@Test
-		void testProcessCreationFormWithInvalidBirthDate() throws Exception {
+		void testProcessCreationFormWithInvalidBirthDate() {
 			LocalDate currentDate = LocalDate.now();
 			String futureBirthDate = currentDate.plusMonths(1).toString();
 
-			mockMvc
-				.perform(post("/owners/{ownerId}/pets/new", TEST_OWNER_ID).param("name", "Betty")
-					.param("birthDate", futureBirthDate))
-				.andExpect(model().attributeHasNoErrors("owner"))
-				.andExpect(model().attributeHasErrors("pet"))
-				.andExpect(model().attributeHasFieldErrors("pet", "birthDate"))
-				.andExpect(model().attributeHasFieldErrorCode("pet", "birthDate", "typeMismatch.birthDate"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("pets/createOrUpdatePetForm"));
+			given()
+				.param("name", "Betty")
+				.param("birthDate", futureBirthDate)
+				.param("type", "hamster")
+				.when()
+				.post("/owners/{ownerId}/pets/new", TEST_OWNER_ID)
+				.then()
+				.statusCode(200)
+				.body("html.body.form.@id", is("add-pet-form"))
+				.body(containsString("invalid date"));
 		}
-
-		@Test
-		void testInitUpdateForm() throws Exception {
-			mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID))
-				.andExpect(status().isOk())
-				.andExpect(model().attributeExists("pet"))
-				.andExpect(view().name("pets/createOrUpdatePetForm"));
-		}
-
 	}
 
 	@Test
-	void testProcessUpdateFormSuccess() throws Exception {
-		mockMvc
-			.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", "Betty")
-				.param("type", "hamster")
-				.param("birthDate", "2015-02-12"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/owners/{ownerId}"));
+	void testInitUpdateForm() {
+		RestAssured.when().get("/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
+			.then()
+			.statusCode(200)
+			.contentType(ContentType.HTML)
+			.body("html.body.form.@id", is("add-pet-form"));
+	}
+
+	@Test
+	void testProcessUpdateFormSuccess() {
+		given()
+			.param("name", "Betty")
+			.param("type", "hamster")
+			.param("birthDate", "2015-02-12")
+			.when()
+			.post("/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
+			.then()
+			.statusCode(200)
+			.body("html.body.div.span", is("Pet details has been edited"));
 	}
 
 	@Nested
 	class ProcessUpdateFormHasErrors {
 
 		@Test
-		void testProcessUpdateFormWithInvalidBirthDate() throws Exception {
-			mockMvc
-				.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", " ")
-					.param("birthDate", "2015/02/12"))
-				.andExpect(model().attributeHasNoErrors("owner"))
-				.andExpect(model().attributeHasErrors("pet"))
-				.andExpect(model().attributeHasFieldErrors("pet", "birthDate"))
-				.andExpect(model().attributeHasFieldErrorCode("pet", "birthDate", "typeMismatch"))
-				.andExpect(view().name("pets/createOrUpdatePetForm"));
+		void testProcessUpdateFormWithInvalidBirthDate() {
+			given()
+				.param("name", " ")
+				.param("birthDate", "2015/02/12")
+				.when()
+				.post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
+				.then()
+				.statusCode(200)
+				.body("html.body.form.@id", is("add-pet-form"))
+				.body(containsString("must not be null"));
 		}
 
 		@Test
-		void testProcessUpdateFormWithBlankName() throws Exception {
-			mockMvc
-				.perform(post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID).param("name", "  ")
-					.param("birthDate", "2015-02-12"))
-				.andExpect(model().attributeHasNoErrors("owner"))
-				.andExpect(model().attributeHasErrors("pet"))
-				.andExpect(model().attributeHasFieldErrors("pet", "name"))
-				.andExpect(model().attributeHasFieldErrorCode("pet", "name", "required"))
-				.andExpect(view().name("pets/createOrUpdatePetForm"));
+		void testProcessUpdateFormWithBlankName() {
+			given()
+				.param("name", "  ")
+				.param("birthDate", "2015-02-12")
+				.when()
+				.post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
+				.then()
+				.statusCode(200)
+				.body("html.body.form.@id", is("add-pet-form"))
+				.body(containsString("must not be blank"));
 		}
-
 	}
+
 
 }
