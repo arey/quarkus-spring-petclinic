@@ -17,6 +17,7 @@ package org.springframework.samples.petclinic.owner;
 
 import java.time.LocalDate;
 
+import jakarta.ws.rs.FormParam;
 import org.springframework.samples.petclinic.model.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -35,9 +36,11 @@ import jakarta.validation.constraints.NotBlank;
 public class Visit extends BaseEntity {
 
 	@Column(name = "visit_date")
+	@FormParam("date")
 	private LocalDate date;
 
 	@NotBlank
+	@FormParam("description")
 	private String description;
 
 	/**

@@ -58,7 +58,7 @@
             <dt>Name</dt>
             <dd>{pet.name}</dd>
             <dt>Birth Date</dt>
-            <dd>{pet.birthDate.format('yyyy-MM-dd')}</dd>
+            <dd>{pet.birthDate ? pet.birthDate.format('yyyy-MM-dd') : ''}</dd>
             <dt>Type</dt>
             <dd>{pet.type}</dd>
           </dl>
@@ -73,7 +73,7 @@
             </thead>
             {#for visit in pet.visits}
             <tr>
-              <td>{visit.date.format('yyyy-MM-dd')}</td>
+              <td>{visit.date ? visit.date.format('yyyy-MM-dd') : ''}</td>
               <td>{visit.description}</td>
             </tr>
             {/for}
