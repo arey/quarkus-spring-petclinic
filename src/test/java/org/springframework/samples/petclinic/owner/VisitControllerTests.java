@@ -16,23 +16,21 @@
 
 package org.springframework.samples.petclinic.owner;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledInNativeImage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.test.context.aot.DisabledInAotMode;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
 
 import java.util.Optional;
+
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static org.hamcrest.Matchers.is;
 
 /**
  * Test class for {@link VisitController}
@@ -40,55 +38,57 @@ import java.util.Optional;
  * @author Colin But
  * @author Wick Dynex
  */
-@WebMvcTest(VisitController.class)
-@DisabledInNativeImage
-@DisabledInAotMode
+@QuarkusTest
+@TestHTTPEndpoint(VisitController.class)
 class VisitControllerTests {
 
 	private static final int TEST_OWNER_ID = 1;
 
 	private static final int TEST_PET_ID = 1;
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@MockitoBean
+	@InjectMock
 	private OwnerRepository owners;
 
 	@BeforeEach
 	void init() {
 		Owner owner = new Owner();
 		Pet pet = new Pet();
-		owner.addPet(pet);
+		owner.registerPet(pet);
 		pet.setId(TEST_PET_ID);
 		given(this.owners.findById(TEST_OWNER_ID)).willReturn(Optional.of(owner));
 	}
 
 	@Test
-	void testInitNewVisitForm() throws Exception {
-		mockMvc.perform(get("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID))
-			.andExpect(status().isOk())
-			.andExpect(view().name("pets/createOrUpdateVisitForm"));
+	void testInitNewVisitForm() {
+		when().get("/new", TEST_OWNER_ID, TEST_PET_ID)
+			.then()
+			.statusCode(200)
+			.contentType(ContentType.HTML)
+			.body("html.body.form.@id", is("add-visit-form"));
 	}
 
 	@Test
-	void testProcessNewVisitFormSuccess() throws Exception {
-		mockMvc
-			.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID)
-				.param("name", "George")
-				.param("description", "Visit Description"))
-			.andExpect(status().is3xxRedirection())
-			.andExpect(view().name("redirect:/owners/{ownerId}"));
+	void testProcessNewVisitFormSuccess() {
+		given()
+			.param("name", "George")
+			.param("description", "Visit Description")
+			.when()
+			.post("/new", TEST_OWNER_ID, TEST_PET_ID)
+			.then()
+			.statusCode(200)
+			.body("html.body.div.span", is("Your visit has been booked"));
 	}
 
 	@Test
-	void testProcessNewVisitFormHasErrors() throws Exception {
-		mockMvc
-			.perform(post("/owners/{ownerId}/pets/{petId}/visits/new", TEST_OWNER_ID, TEST_PET_ID).param("name",
-					"George"))
-			.andExpect(model().attributeHasErrors("visit"))
-			.andExpect(status().isOk())
-			.andExpect(view().name("pets/createOrUpdateVisitForm"));
+	void testProcessNewVisitFormHasErrors() {
+		given()
+			.param("name", "George")
+			.when()
+			.post("/new", TEST_OWNER_ID, TEST_PET_ID)
+			.then()
+			.statusCode(200)
+			.body("html.body.form.@id", is("add-visit-form"))
+			.body(containsString("must not be blank"));
 	}
 
 }
