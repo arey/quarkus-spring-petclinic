@@ -16,39 +16,31 @@
 
 package org.springframework.samples.petclinic.vet;
 
-import org.assertj.core.util.Lists;
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.DisabledInNativeImage;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.aot.DisabledInAotMode;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+
+import java.util.List;
+
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * Test class for the {@link VetController}
  */
-
-@WebMvcTest(VetController.class)
-@DisabledInNativeImage
-@DisabledInAotMode
+@QuarkusTest
+@TestHTTPEndpoint(VetController.class)
 class VetControllerTests {
 
-	@Autowired
-	private MockMvc mockMvc;
-
-	@MockitoBean
+	@InjectMock
 	private VetRepository vets;
 
 	private Vet james() {
@@ -73,20 +65,25 @@ class VetControllerTests {
 
 	@BeforeEach
 	void setup() {
-		given(this.vets.findAll()).willReturn(Lists.newArrayList(james(), helen()));
+		given(this.vets.findAll()).willReturn(List.of(james(), helen()));
 		given(this.vets.findAll(any(Pageable.class)))
-			.willReturn(new PageImpl<Vet>(Lists.newArrayList(james(), helen())));
+			.willReturn(new PageImpl<>(List.of(james(), helen())));
 
 	}
 
 	@Test
-	void testShowVetListHtml() throws Exception {
-
-		mockMvc.perform(MockMvcRequestBuilders.get("/vets.html?page=1"))
-			.andExpect(status().isOk())
-			.andExpect(model().attributeExists("listVets"))
-			.andExpect(view().name("vets/vetList"));
-
+	void testShowVetListHtml() {
+		RestAssured
+			.given()
+				.queryParam("page", 1)
+			.when()
+				.get("/")
+			.then()
+				.statusCode(200)
+				.contentType(ContentType.HTML)
+				.body("html.head.title", equalTo("PetClinic :: a Quarkus demonstration with Spring support"))
+				.body(containsString("Helen Leary"))
+				.body(containsString("James Carter"));
 	}
 
 }

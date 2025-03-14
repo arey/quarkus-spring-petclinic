@@ -1,8 +1,4 @@
-<!DOCTYPE html>
-
-<html xmlns:th="https://www.thymeleaf.org"
-      th:replace="~{fragments/layout :: layout (~{::body},'vets')}">
-
+{#include fragments/layout}
 <body>
 
 <h2>Veterinarians</h2>
@@ -15,43 +11,69 @@
   </tr>
   </thead>
   <tbody>
-  <tr th:each="vet : ${listVets}">
-    <td th:text="${vet.firstName + ' ' + vet.lastName}"></td>
-    <td><span th:each="specialty : ${vet.specialties}"
-              th:text="${specialty.name + ' '}"/> <span
-      th:if="${vet.nrOfSpecialties == 0}">none</span></td>
+  {#for vet in vets}
+  <tr>
+    <td>{vet.firstName} {vet.lastName}</td>
+    <td>
+      {#for specialty in vet.specialties}
+        <span>{specialty.name} </span>
+      {/for}
+      {#if vet.nrOfSpecialties == 0}
+          <span>none</span>
+      {/if}
+    </td>
   </tr>
+  {/for}
   </tbody>
 </table>
 
-<div th:if="${totalPages > 1}">
+{#if page.totalPages > 1}
+<div>
   <span>Pages:</span>
   <span>[</span>
-  <span th:each="i: ${#numbers.sequence(1, totalPages)}">
-      <a th:if="${currentPage != i}" th:href="@{'/vets.html?page=__${i}__'}">[[${i}]]</a>
-      <span th:unless="${currentPage != i}">[[${i}]]</span>
+  {#for i in page.totalPages}
+    <span>
+      {#if currentPage != i}
+        <a href="/vets?page={i}">{i}</a>
+      {#else}
+        <span>{i}</span>
+      {/if}
     </span>
+  {/for}
   <span>]&nbsp;</span>
   <span>
-      <a th:if="${currentPage > 1}" th:href="@{'/vets.html?page=1'}" title="First"
-         class="fa fa-fast-backward"></a>
-      <span th:unless="${currentPage > 1}" title="First" class="fa fa-fast-backward"></span>
+      {#if currentPage > 1}
+        <a href="/vets?page=1" title="First"
+           class="fa fa-fast-backward"></a>
+      {#else}
+        <span title="First" class="fa fa-fast-backward"></span>
+      {/if}
     </span>
   <span>
-      <a th:if="${currentPage > 1}" th:href="@{'/vets.html?page=__${currentPage - 1}__'}" title="Previous"
-         class="fa fa-step-backward"></a>
-      <span th:unless="${currentPage > 1}" title="Previous" class="fa fa-step-backward"></span>
+      {#if currentPage > 1}
+        <a href="/vets?page={currentPage - 1}" title="Previous"
+           class="fa fa-step-backward"></a>
+      {#else}
+        <span title="Previous" class="fa fa-step-backward"></span>
+      {/if}
     </span>
   <span>
-      <a th:if="${currentPage < totalPages}" th:href="@{'/vets.html?page=__${currentPage + 1}__'}" title="Next"
-         class="fa fa-step-forward"></a>
-      <span th:unless="${currentPage < totalPages}" title="Next" class="fa fa-step-forward"></span>
+      {#if currentPage < page.totalPages}
+        <a href="/vets?page={currentPage + 1}" title="Next"
+           class="fa fa-step-forward"></a>
+      {#else}
+        <span title="Next" class="fa fa-step-forward"></span>
+      {/if}
     </span>
   <span>
-      <a th:if="${currentPage < totalPages}" th:href="@{'/vets.html?page=__${totalPages}__'}" title="Last"
-         class="fa fa-fast-forward"></a>
-      <span th:unless="${currentPage < totalPages}" title="Last" class="fa fa-fast-forward"></span>
+      {#if currentPage < page.totalPages}
+        <a href="/vets?page={page.totalPages}" title="Last"
+           class="fa fa-fast-forward"></a>
+      {#else}
+        <span title="Last" class="fa fa-fast-forward"></span>
+      {/if}
     </span>
 </div>
+{/if}
 </body>
-</html>
+{/include}
