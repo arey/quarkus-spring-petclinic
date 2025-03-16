@@ -1,11 +1,10 @@
-<!DOCTYPE html>
+{#include fragments/layout}
 
-<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'error')}">
-
-  <body>
-    <img src="../static/resources/images/pets.png" th:src="@{/resources/images/pets.png}"/>
+<body>
+    <img class="img-responsive" src="/images/pets.png" />
     <h2>Something happened...</h2>
-    <p th:text="${message}">Exception message</p>
+    <p>{message}</p>
   </body>
 
-</html>
+{/include}
+

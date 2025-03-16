@@ -16,9 +16,12 @@
 
 package org.springframework.samples.petclinic.system;
 
+import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.containsString;
 
 /**
  * Test class for {@link CrashController}
@@ -26,16 +29,16 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
  * @author Colin But
  * @author Alex Lutz
  */
-// Waiting https://github.com/spring-projects/spring-boot/issues/5574 ..good
-// luck ((plain(st) UNIT test)! :)
+@QuarkusTest
 class CrashControllerTests {
-
-	final CrashController testee = new CrashController();
 
 	@Test
 	void testTriggerException() {
-		assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> testee.triggerException())
-			.withMessageContaining("Expected: controller used to showcase what happens when an exception is thrown");
+		given()
+			.when().get("/oups")
+			.then()
+			.statusCode(200)
+			.contentType(ContentType.HTML)
+			.body(containsString("Expected: controller used to showcase what happens when an exception is thrown"));
 	}
-
 }
