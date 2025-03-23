@@ -16,6 +16,7 @@
 package org.springframework.samples.petclinic.vet;
 
 import io.quarkus.qute.TemplateInstance;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,7 @@ class VetController {
 	}
 
 	@GetMapping
+	@Cacheable("vets")
 	public TemplateInstance showVetList(@RequestParam(defaultValue = "1") int page) {
 		Vets vets = new Vets();
 		Page<Vet> paginated = findPaginated(page);

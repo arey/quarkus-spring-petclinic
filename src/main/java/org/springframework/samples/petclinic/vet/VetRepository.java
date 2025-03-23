@@ -16,7 +16,6 @@
 package org.springframework.samples.petclinic.vet;
 
 import jakarta.transaction.Transactional;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.ListCrudRepository;
@@ -42,7 +41,6 @@ public interface VetRepository extends ListCrudRepository<Vet, Integer> {
 	 * @return a <code>Collection</code> of <code>Vet</code>s
 	 */
 	@Transactional
-	@Cacheable("vets")
 	List<Vet> findAll();
 
 	/**
@@ -51,7 +49,6 @@ public interface VetRepository extends ListCrudRepository<Vet, Integer> {
 	 * @return
 	 */
 	@Transactional
-	@Cacheable("vets")
 	Page<Vet> findAll(Pageable pageable);
 
 }
