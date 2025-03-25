@@ -162,7 +162,7 @@ class ClinicServiceTests {
 		Collection<PetType> types = this.petTypes.findAll();
 		pet.setType(EntityUtils.getById(types, PetType.class, 2));
 		pet.setBirthDate(LocalDate.now());
-		owner6.addPet(pet);
+		owner6.registerPet(pet);
 		assertThat(owner6.getPets(), hasSize(found + 1));
 
 		this.owners.save(owner6);
