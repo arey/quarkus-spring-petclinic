@@ -15,7 +15,6 @@
  */
 package org.springframework.samples.petclinic.vet;
 
-import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.ListCrudRepository;
@@ -40,7 +39,6 @@ public interface VetRepository extends ListCrudRepository<Vet, Integer> {
 	 *
 	 * @return a <code>Collection</code> of <code>Vet</code>s
 	 */
-	@Transactional
 	List<Vet> findAll();
 
 	/**
@@ -48,7 +46,6 @@ public interface VetRepository extends ListCrudRepository<Vet, Integer> {
 	 * @param pageable
 	 * @return
 	 */
-	@Transactional
 	Page<Vet> findAll(Pageable pageable);
 
 }
