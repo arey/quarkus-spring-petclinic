@@ -26,7 +26,7 @@
 3) Run the app with `spring.profiles.active=mysql` (e.g. as a System property via the command
    line, but any way that sets that property in a Spring Boot app should work). For example use
    
-   mvn spring-boot:run -Dspring-boot.run.profiles=mysql
+   mvn quarkus:dev -Dquarkus.profile=mysql
 
    To activate the profile on the command line.
 
