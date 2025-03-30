@@ -6,7 +6,7 @@
 
 1) Run the "docker-compose.yml" from the root of the project:
 
-        $ docker-compose up
+        $ docker-compose up postgres
         ...
         spring-petclinic-postgres-1  | The files belonging to this database system will be owned by user "postgres".
         ...

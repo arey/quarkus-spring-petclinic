@@ -13,7 +13,7 @@
    "docker-compose.yml" from the root of the project (if you have docker installed
    locally):
 
-        $ docker-compose up
+        $ docker-compose up mysql
         ...
         mysql_1_eedb4818d817 | MySQL init process done. Ready for start up.
         ...
