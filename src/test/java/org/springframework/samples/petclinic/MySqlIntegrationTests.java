@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.vet.VetRepository;
 
-
 @QuarkusTest
 @TestProfile(Profiles.MySQL.class)
 class MySqlIntegrationTests {
@@ -41,7 +40,8 @@ class MySqlIntegrationTests {
 
 	@Test
 	void testOwnerDetails() {
-		RestAssured.when().get("/owners/1")
+		RestAssured.when()
+			.get("/owners/1")
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.HTML)

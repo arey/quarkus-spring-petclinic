@@ -22,11 +22,8 @@ public record Result(String message, Boolean success, Map<String, FieldError> fi
 	}
 
 	public Result(Set<? extends ConstraintViolation<?>> violations) {
-		this(violations.stream()
-				.map(ConstraintViolation::getMessage)
-				.collect(Collectors.joining(", ")),
-			violations.isEmpty(),
-			FieldError.from(violations));
+		this(violations.stream().map(ConstraintViolation::getMessage).collect(Collectors.joining(", ")),
+				violations.isEmpty(), FieldError.from(violations));
 	}
 
 	public boolean isSuccess() {
@@ -42,7 +39,8 @@ public record Result(String message, Boolean success, Map<String, FieldError> fi
 	}
 
 	public String getErrorMessage(String field) {
-		return fieldErrors.entrySet().stream()
+		return fieldErrors.entrySet()
+			.stream()
 			.filter(entry -> entry.getKey().equals(field))
 			.flatMap(entry -> entry.getValue().messages().stream())
 			.collect(Collectors.joining(", "));
@@ -71,7 +69,9 @@ public record Result(String message, Boolean success, Map<String, FieldError> fi
 			for (ConstraintViolation<?> violation : violations) {
 				String field = violation.getPropertyPath().toString();
 				String message = violation.getMessage();
-				fieldErrorMap.computeIfAbsent(field, k -> new FieldError(field, new HashSet<>())).messages().add(message);
+				fieldErrorMap.computeIfAbsent(field, k -> new FieldError(field, new HashSet<>()))
+					.messages()
+					.add(message);
 			}
 			return fieldErrorMap;
 		}

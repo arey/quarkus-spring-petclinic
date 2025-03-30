@@ -14,15 +14,10 @@ public class I18nHelper {
 
 	public static AppMessages lookupAppMessages(String acceptLanguage) {
 		List<Locale.LanguageRange> languageRanges = Locale.LanguageRange.parse(acceptLanguage);
-		Locale locale = Locale.lookup(languageRanges, List.of(
-			Locale.forLanguageTag("en"),
-			Locale.forLanguageTag("de"),
-			Locale.forLanguageTag("fa"),
-			Locale.forLanguageTag("ko"),
-			Locale.forLanguageTag("pt"),
-			Locale.forLanguageTag("ru"),
-			Locale.forLanguageTag("tr")
-		));
+		Locale locale = Locale.lookup(languageRanges,
+				List.of(Locale.forLanguageTag("en"), Locale.forLanguageTag("de"), Locale.forLanguageTag("fa"),
+						Locale.forLanguageTag("ko"), Locale.forLanguageTag("pt"), Locale.forLanguageTag("ru"),
+						Locale.forLanguageTag("tr")));
 		if (locale == null) {
 			locale = Locale.forLanguageTag("en");
 		}

@@ -16,7 +16,6 @@
 
 package org.springframework.samples.petclinic.service;
 
-
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Optional;
@@ -123,7 +122,7 @@ class ClinicServiceTests {
 	@TestTransaction
 	void shouldUpdateOwner() {
 		Optional<Owner> optionalOwner = this.owners.findById(1);
-		assertThat(optionalOwner.isPresent(), is(true) );
+		assertThat(optionalOwner.isPresent(), is(true));
 		Owner owner = optionalOwner.get();
 		String oldLastName = owner.getLastName();
 		String newLastName = oldLastName + "X";
@@ -239,6 +238,5 @@ class ClinicServiceTests {
 		assertThat(visits, hasSize(2));
 		assertThat(visits.iterator().next().getDate(), is(notNullValue()));
 	}
-
 
 }

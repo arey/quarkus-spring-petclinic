@@ -30,7 +30,6 @@ import static org.hamcrest.Matchers.containsString;
 @TestProfile(Profiles.Postgres.class)
 class PostgresIntegrationTests {
 
-
 	@Autowired
 	private VetRepository vets;
 
@@ -41,7 +40,8 @@ class PostgresIntegrationTests {
 
 	@Test
 	void testOwnerDetails() {
-		RestAssured.when().get("/owners/1")
+		RestAssured.when()
+			.get("/owners/1")
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.HTML)
@@ -53,8 +53,5 @@ class PostgresIntegrationTests {
 			.body(containsString("Leo"))
 			.body(containsString("cat"));
 	}
+
 }
-
-
-
-

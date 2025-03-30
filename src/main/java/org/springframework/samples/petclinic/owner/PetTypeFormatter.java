@@ -21,11 +21,11 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 
 /**
- * Instructs JAX-RS on how to parse and print elements of type 'PetType'.
- * This class implements the ParamConverter interface from JAX-RS.
+ * Instructs JAX-RS on how to parse and print elements of type 'PetType'. This class
+ * implements the ParamConverter interface from JAX-RS.
  * <p>
- * Previously, this class was used in a Spring MVC context as a Formatter.
- * It has been migrated to Quarkus and now implements the JAX-RS ParamConverter interface.
+ * Previously, this class was used in a Spring MVC context as a Formatter. It has been
+ * migrated to Quarkus and now implements the JAX-RS ParamConverter interface.
  *
  * @author Mark Fisher
  * @author Juergen Hoeller

@@ -34,11 +34,12 @@ class CrashControllerTests {
 
 	@Test
 	void testTriggerException() {
-		given()
-			.when().get("/oups")
+		given().when()
+			.get("/oups")
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.HTML)
 			.body(containsString("Expected: controller used to showcase what happens when an exception is thrown"));
 	}
+
 }

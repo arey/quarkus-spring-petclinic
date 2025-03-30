@@ -97,13 +97,16 @@ public class Owner extends Person {
 	}
 
 	/**
-	 * See the <a href="https://github.com/spring-projects/spring-petclinic/pull/1765">GitHub discussion</a>.
+	 * See the
+	 * <a href="https://github.com/spring-projects/spring-petclinic/pull/1765">GitHub
+	 * discussion</a>.
 	 */
 	public void registerPet(Pet pet) {
 		Pet existingPet = getPet(pet.getId());
 		if (existingPet == null) {
 			getPets().add(pet);
-		} else {
+		}
+		else {
 			existingPet.setName(pet.getName());
 			existingPet.setBirthDate(pet.getBirthDate());
 			existingPet.setType(pet.getType());
@@ -156,15 +159,9 @@ public class Owner extends Person {
 
 	@Override
 	public String toString() {
-		return "Owner{" +
-			"new=" + isNew() + '\'' +
-			", lastName='" + getLastName() + '\'' +
-			", firstName='" + getFirstName() + '\'' +
-			", address='" + address + '\'' +
-			", city='" + city + '\'' +
-			", telephone='" + telephone + '\'' +
-			", pets=" + pets +
-			'}';
+		return "Owner{" + "new=" + isNew() + '\'' + ", lastName='" + getLastName() + '\'' + ", firstName='"
+				+ getFirstName() + '\'' + ", address='" + address + '\'' + ", city='" + city + '\'' + ", telephone='"
+				+ telephone + '\'' + ", pets=" + pets + '}';
 	}
 
 	/**

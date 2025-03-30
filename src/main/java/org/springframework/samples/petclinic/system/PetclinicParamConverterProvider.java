@@ -21,12 +21,14 @@ public class PetclinicParamConverterProvider implements ParamConverterProvider {
 
 	@SuppressWarnings("unchecked")
 	@Override
-    public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
-        if (rawType.equals(PetType.class)) {
-            return (ParamConverter<T>) petTypeFormatter;
-        } else  if (rawType.equals(LocalDate.class)) {
+	public <T> ParamConverter<T> getConverter(Class<T> rawType, Type genericType, Annotation[] annotations) {
+		if (rawType.equals(PetType.class)) {
+			return (ParamConverter<T>) petTypeFormatter;
+		}
+		else if (rawType.equals(LocalDate.class)) {
 			return (ParamConverter<T>) new LocalDateParamConverter();
 		}
-        return null;
-    }
+		return null;
+	}
+
 }

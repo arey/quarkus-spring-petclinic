@@ -10,7 +10,7 @@ import java.util.List;
 @CheckedTemplate(basePath = "owners")
 public class OwnerTemplates {
 
-    public static native TemplateInstance findOwners(List<String> errors);
+	public static native TemplateInstance findOwners(List<String> errors);
 
 	public static native TemplateInstance ownersList(List<Owner> owners, int currentPage, Page<Owner> page);
 

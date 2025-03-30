@@ -19,4 +19,5 @@ public interface PetTypeRepository extends JpaRepository<PetType, Integer> {
 	 */
 	// FIXME : à tester @Query("SELECT ptype FROM PetType ptype ORDER BY ptype.name")
 	// List<PetType> findPetTypes();
+
 }

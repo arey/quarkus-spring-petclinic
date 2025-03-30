@@ -43,4 +43,5 @@ class LocalDateParamConverterTest {
 	void testToStringNull() {
 		assertThat(converter.toString(null), is(equalTo("")));
 	}
+
 }

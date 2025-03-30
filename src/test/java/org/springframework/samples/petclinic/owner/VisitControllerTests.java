@@ -69,8 +69,7 @@ class VisitControllerTests {
 
 	@Test
 	void testProcessNewVisitFormSuccess() {
-		given()
-			.param("name", "George")
+		given().param("name", "George")
 			.param("description", "Visit Description")
 			.when()
 			.post("/new", TEST_OWNER_ID, TEST_PET_ID)
@@ -81,8 +80,7 @@ class VisitControllerTests {
 
 	@Test
 	void testProcessNewVisitFormHasErrors() {
-		given()
-			.param("name", "George")
+		given().param("name", "George")
 			.when()
 			.post("/new", TEST_OWNER_ID, TEST_PET_ID)
 			.then()

@@ -72,9 +72,9 @@ class PetControllerTests {
 		pet.setId(TEST_PET_ID);
 		dog.setId(TEST_PET_ID + 1);
 		pet.setName("petty");
-		pet.setBirthDate(LocalDate.of(2025,3,9));
+		pet.setBirthDate(LocalDate.of(2025, 3, 9));
 		dog.setName("doggy");
-		dog.setBirthDate(LocalDate.of(2025,2,23));
+		dog.setBirthDate(LocalDate.of(2025, 2, 23));
 		given(this.owners.findById(TEST_OWNER_ID)).willReturn(Optional.of(owner));
 	}
 
@@ -90,8 +90,7 @@ class PetControllerTests {
 	@Test
 	void testProcessCreationFormSuccess() {
 		given(this.owners.save(owner)).willReturn(owner);
-		given()
-			.param("name", "Betty")
+		given().param("name", "Betty")
 			.param("type", "hamster")
 			.param("birthDate", "2015-02-12")
 			.when()
@@ -106,8 +105,7 @@ class PetControllerTests {
 
 		@Test
 		void testProcessCreationFormWithBlankName() {
-			given()
-				.param("name", "\t \n")
+			given().param("name", "\t \n")
 				.param("birthDate", "2015-02-12")
 				.when()
 				.post("/owners/{ownerId}/pets/new", TEST_OWNER_ID)
@@ -119,8 +117,7 @@ class PetControllerTests {
 
 		@Test
 		void testProcessCreationFormWithDuplicateName() {
-			given()
-				.param("name", "petty")
+			given().param("name", "petty")
 				.param("birthDate", "2015-02-12")
 				.param("type", "hamster")
 				.when()
@@ -133,8 +130,7 @@ class PetControllerTests {
 
 		@Test
 		void testProcessCreationFormWithMissingPetType() {
-			given()
-				.param("name", "Betty")
+			given().param("name", "Betty")
 				.param("birthDate", "2015-02-12")
 				.when()
 				.post("/owners/{ownerId}/pets/new", TEST_OWNER_ID)
@@ -149,8 +145,7 @@ class PetControllerTests {
 			LocalDate currentDate = LocalDate.now();
 			String futureBirthDate = currentDate.plusMonths(1).toString();
 
-			given()
-				.param("name", "Betty")
+			given().param("name", "Betty")
 				.param("birthDate", futureBirthDate)
 				.param("type", "hamster")
 				.when()
@@ -160,11 +155,13 @@ class PetControllerTests {
 				.body("html.body.form.@id", is("add-pet-form"))
 				.body(containsString("invalid date"));
 		}
+
 	}
 
 	@Test
 	void testInitUpdateForm() {
-		RestAssured.when().get("/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
+		RestAssured.when()
+			.get("/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.HTML)
@@ -173,8 +170,7 @@ class PetControllerTests {
 
 	@Test
 	void testProcessUpdateFormSuccess() {
-		given()
-			.param("name", "Betty")
+		given().param("name", "Betty")
 			.param("type", "hamster")
 			.param("birthDate", "2015-02-12")
 			.when()
@@ -189,8 +185,7 @@ class PetControllerTests {
 
 		@Test
 		void testProcessUpdateFormWithInvalidBirthDate() {
-			given()
-				.param("name", " ")
+			given().param("name", " ")
 				.param("birthDate", "2015/02/12")
 				.when()
 				.post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
@@ -202,8 +197,7 @@ class PetControllerTests {
 
 		@Test
 		void testProcessUpdateFormWithBlankName() {
-			given()
-				.param("name", "  ")
+			given().param("name", "  ")
 				.param("birthDate", "2015-02-12")
 				.when()
 				.post("/owners/{ownerId}/pets/{petId}/edit", TEST_OWNER_ID, TEST_PET_ID)
@@ -212,7 +206,7 @@ class PetControllerTests {
 				.body("html.body.form.@id", is("add-pet-form"))
 				.body(containsString("must not be blank"));
 		}
-	}
 
+	}
 
 }

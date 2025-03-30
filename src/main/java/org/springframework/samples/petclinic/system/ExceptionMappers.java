@@ -20,4 +20,5 @@ class ExceptionMappers {
 		LOG.error("Internal server error", exception);
 		return Response.ok(error.data("message", exception.getMessage())).build();
 	}
+
 }

@@ -6,8 +6,8 @@ import io.quarkus.qute.i18n.MessageBundle;
 @MessageBundle(value = "messages", locale = "en")
 public interface AppMessages {
 
-    @Message
-    String welcome();
+	@Message
+	String welcome();
 
 	@Message
 	String required();

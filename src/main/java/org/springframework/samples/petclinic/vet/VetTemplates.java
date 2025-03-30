@@ -9,6 +9,6 @@ import java.util.List;
 @CheckedTemplate(basePath = "vets")
 public class VetTemplates {
 
-    public static native TemplateInstance vetList(List<Vet> vets, int currentPage, Page<Vet> page);
+	public static native TemplateInstance vetList(List<Vet> vets, int currentPage, Page<Vet> page);
 
 }

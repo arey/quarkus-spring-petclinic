@@ -26,7 +26,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-
 import java.util.List;
 
 import static org.hamcrest.Matchers.*;
@@ -66,24 +65,22 @@ class VetControllerTests {
 	@BeforeEach
 	void setup() {
 		given(this.vets.findAll()).willReturn(List.of(james(), helen()));
-		given(this.vets.findAll(any(Pageable.class)))
-			.willReturn(new PageImpl<>(List.of(james(), helen())));
+		given(this.vets.findAll(any(Pageable.class))).willReturn(new PageImpl<>(List.of(james(), helen())));
 
 	}
 
 	@Test
 	void testShowVetListHtml() {
-		RestAssured
-			.given()
-				.queryParam("page", 1)
+		RestAssured.given()
+			.queryParam("page", 1)
 			.when()
-				.get("/")
+			.get("/")
 			.then()
-				.statusCode(200)
-				.contentType(ContentType.HTML)
-				.body("html.head.title", equalTo("PetClinic :: a Quarkus demonstration with Spring support"))
-				.body(containsString("Helen Leary"))
-				.body(containsString("James Carter"));
+			.statusCode(200)
+			.contentType(ContentType.HTML)
+			.body("html.head.title", equalTo("PetClinic :: a Quarkus demonstration with Spring support"))
+			.body(containsString("Helen Leary"))
+			.body(containsString("James Carter"));
 	}
 
 }

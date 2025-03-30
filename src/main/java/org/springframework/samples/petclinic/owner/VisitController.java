@@ -22,7 +22,6 @@ import jakarta.validation.Validator;
 import org.springframework.samples.petclinic.system.Result;
 import org.springframework.web.bind.annotation.*;
 
-
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -55,7 +54,8 @@ class VisitController {
 	}
 
 	@PostMapping("/new")
-	public TemplateInstance processNewVisitForm(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId, Visit visit) {
+	public TemplateInstance processNewVisitForm(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
+			Visit visit) {
 		Owner owner = loadOwner(ownerId);
 		Pet pet = owner.getPet(petId);
 		Result result = Result.from(validator.validate(visit));
@@ -71,6 +71,7 @@ class VisitController {
 	private Owner loadOwner(int ownerId) {
 		Optional<Owner> optionalOwner = owners.findById(ownerId);
 		return optionalOwner.orElseThrow(() -> new IllegalArgumentException(
-			"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
+				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
 	}
+
 }

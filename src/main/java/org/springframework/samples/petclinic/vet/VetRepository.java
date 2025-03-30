@@ -36,7 +36,6 @@ public interface VetRepository extends ListCrudRepository<Vet, Integer> {
 
 	/**
 	 * Retrieve all <code>Vet</code>s from the data store.
-	 *
 	 * @return a <code>Collection</code> of <code>Vet</code>s
 	 */
 	List<Vet> findAll();

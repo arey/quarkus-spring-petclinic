@@ -28,7 +28,6 @@ import org.springframework.samples.petclinic.system.I18nHelper;
 import org.springframework.samples.petclinic.system.Result;
 import org.springframework.web.bind.annotation.*;
 
-
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -80,7 +79,7 @@ class OwnerController {
 
 	@GetMapping("/")
 	public TemplateInstance processFindForm(@RequestParam(defaultValue = "1") int page, @RequestParam String lastName,
-											@HeaderParam("Accept-Language") String language) {
+			@HeaderParam("Accept-Language") String language) {
 		// allow parameterless GET request for /owners to return all records
 		if (lastName == null) {
 			lastName = ""; // empty string signifies broadest possible search

@@ -88,7 +88,8 @@ class OwnerControllerTests {
 
 	@Test
 	void testInitCreationForm() {
-		RestAssured.when().get("/new")
+		RestAssured.when()
+			.get("/new")
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.HTML)
@@ -127,7 +128,8 @@ class OwnerControllerTests {
 
 	@Test
 	void testInitFindForm() {
-		RestAssured.when().get("/find")
+		RestAssured.when()
+			.get("/find")
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.HTML)
@@ -184,7 +186,8 @@ class OwnerControllerTests {
 
 	@Test
 	void testInitUpdateOwnerForm() {
-		RestAssured.when().get("/{ownerId}/edit", TEST_OWNER_ID)
+		RestAssured.when()
+			.get("/{ownerId}/edit", TEST_OWNER_ID)
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.HTML)
@@ -211,7 +214,6 @@ class OwnerControllerTests {
 			.body("html.body.div.span", is("Owner Values Updated"));
 	}
 
-
 	@Test
 	void testProcessUpdateOwnerFormHasErrors() {
 		RestAssured.given()
@@ -230,7 +232,8 @@ class OwnerControllerTests {
 
 	@Test
 	void testShowOwner() {
-		RestAssured.when().get("/{ownerId}", TEST_OWNER_ID)
+		RestAssured.when()
+			.get("/{ownerId}", TEST_OWNER_ID)
 			.then()
 			.statusCode(200)
 			.contentType(ContentType.HTML)

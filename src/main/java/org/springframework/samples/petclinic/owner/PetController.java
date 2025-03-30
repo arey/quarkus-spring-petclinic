@@ -27,7 +27,6 @@ import org.springframework.samples.petclinic.system.Result;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
@@ -69,7 +68,6 @@ class PetController {
 		return owner.getPet(petId);
 	}
 
-
 	@GetMapping("/new")
 	public TemplateInstance initCreationForm(@PathVariable("ownerId") int ownerId) {
 		Owner owner = findOwner(ownerId);
@@ -80,7 +78,7 @@ class PetController {
 
 	@PostMapping("/new")
 	public TemplateInstance processCreationForm(@PathVariable int ownerId, Pet pet,
-												@HeaderParam("Accept-Language") @DefaultValue("en") String language) {
+			@HeaderParam("Accept-Language") @DefaultValue("en") String language) {
 		Owner owner = findOwner(ownerId);
 
 		Result result = Result.from(validator.validate(pet));
@@ -90,7 +88,7 @@ class PetController {
 
 		if (StringUtils.hasText(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null)
 			return PetTemplates.createOrUpdatePetForm(owner, pet, petTypes.findAllByOrderByName(),
-				Result.error("name", I18nHelper.lookupAppMessages(language).duplicate()));
+					Result.error("name", I18nHelper.lookupAppMessages(language).duplicate()));
 
 		LocalDate currentDate = LocalDate.now();
 		if (pet.getBirthDate() != null && pet.getBirthDate().isAfter(currentDate)) {
@@ -104,13 +102,15 @@ class PetController {
 	}
 
 	@GetMapping("/{petId}/edit")
-	public TemplateInstance initUpdateForm(@PathVariable("ownerId") int ownerId, @PathVariable(name = "petId", required = false) Integer petId) {
-		return PetTemplates.createOrUpdatePetForm(findOwner(1), findPet(ownerId, petId), petTypes.findAllByOrderByName(), Result.empty());
+	public TemplateInstance initUpdateForm(@PathVariable("ownerId") int ownerId,
+			@PathVariable(name = "petId", required = false) Integer petId) {
+		return PetTemplates.createOrUpdatePetForm(findOwner(1), findPet(ownerId, petId),
+				petTypes.findAllByOrderByName(), Result.empty());
 	}
 
 	@PostMapping("/{petId}/edit")
 	public TemplateInstance processUpdateForm(@PathVariable int ownerId, @PathVariable int petId, Pet pet,
-											  @HeaderParam("Accept-Language") String language) {
+			@HeaderParam("Accept-Language") String language) {
 
 		String petName = pet.getName();
 		pet.setId(petId);
