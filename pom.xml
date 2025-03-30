@@ -28,6 +28,9 @@
     <nohttp-checkstyle.version>0.0.11</nohttp-checkstyle.version>
     <spring-format.version>0.0.43</spring-format.version>
     <surefire-plugin.version>3.5.0</surefire-plugin.version>
+    <git-commit-id-maven-plugin.version>9.0.1</git-commit-id-maven-plugin.version>
+    <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
+    <cyclonedx-maven-plugin.version>2.9.1</cyclonedx-maven-plugin.version>
 
   </properties>
 
@@ -203,6 +206,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
         <executions>
           <execution>
             <id>enforce-java</id>
@@ -293,6 +297,7 @@
       <plugin>
         <groupId>io.github.git-commit-id</groupId>
         <artifactId>git-commit-id-maven-plugin</artifactId>
+        <version>${git-commit-id-maven-plugin.version}</version>
         <configuration>
           <failOnNoGitDirectory>false</failOnNoGitDirectory>
           <failOnUnableToExtractRepoInfo>false</failOnUnableToExtractRepoInfo>
@@ -304,6 +309,7 @@
         <?m2e ignore?>
         <groupId>org.cyclonedx</groupId>
         <artifactId>cyclonedx-maven-plugin</artifactId>
+        <version>${cyclonedx-maven-plugin.version}</version>
       </plugin>
 
     </plugins>
