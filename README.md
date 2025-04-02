@@ -1,6 +1,6 @@
 # Spring PetClinic Sample Application [![Build Status](https://github.com/spring-petclinic/quarkus-spring-petclinic/actions/workflows/maven-build.yml/badge.svg)](https://github.com/spring-petclinic/quarkus-spring-petclinic/actions/workflows/maven-build.yml)[![Build Status](https://github.com/spring-petclinic/quarkus-spring-petclinic/actions/workflows/gradle-build.yml/badge.svg)](https://github.com/spring-petclinic/quarkus-spring-petclinic/actions/workflows/gradle-build.yml)
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-petclinic/quarkus-spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=7517918)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/spring-petclinic/quarkus-spring-petclinic) [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=959372526)
 
 This Spring Petclinic fork is a [Quarkus](https://quarkus.io/) application built using [Maven](https://spring.io/guides/gs/maven/) or [Gradle](https://spring.io/guides/gs/gradle/).
 This Quarkus application have been **created from a Spring Boot application**.
