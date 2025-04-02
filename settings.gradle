@@ -1,1 +1,11 @@
-rootProject.name = 'spring-petclinic'
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        mavenLocal()
+    }
+    plugins {
+        id "${quarkusPluginId}" version "${quarkusPluginVersion}"
+    }
+}
+rootProject.name = 'quarkus-spring-petclinic'

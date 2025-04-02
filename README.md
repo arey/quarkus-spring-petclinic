@@ -8,7 +8,8 @@ It uses almost all the **Spring extensions provided by Quarkus** : **Spring DI**
 
 ## Running the application in dev mode
 
-You can run your application in dev mode that enables live coding using:
+Make sure you have Java 17 or a later version of Java installed.
+Then you can run your application in dev mode that enables live coding using:
 
 ```shell script
 git clone https://github.com/spring-petclinic/quarkus-spring-petclinic.git
@@ -21,6 +22,9 @@ You can then access the Petclinic at <http://localhost:8080/>.
 <img width="1042" alt="petclinic-screenshot" src="docs/quarkus-spring-petclinic-screenshot.png">
 
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+
+> NOTE: If you prefer to use Gradle, you can build the app using `./gradlew build` and look for the jar file in `build/libs`. 
+> For the moment, there is a bug in the `ResteasyReactiveProcessor` class that prevents the application from building with Gradle. 
 
 ## Packaging and running the application
 
@@ -77,26 +81,6 @@ If you want to learn more about building native executables, please consult <htt
 - Quarkus Extension for Spring Boot properties ([guide](https://quarkus.io/guides/spring-boot-properties)): Use Spring Boot properties annotations to configure your application
 - Quarkus Extension for Spring Cache API([guide](https://quarkus.io/guides/spring-cache): Use Spring Cache annotations to cache the results of your methods
 
-## Provided Code
-
-### Spring Web
-
-Spring, the Quarkus way! Start your REST Web Services with a Spring Controller.
-
-[Related guide section...](
-
-
-## Run Petclinic locally
-
-You can build a jar file and run it from the command line (it should work just as well with Java 17 or newer):
-
-Or you can run it from Maven directly using the Spring Boot Maven plugin. If you do this, it will pick up changes that you make in the project immediately (changes to Java source files require a compile as well - most people use an IDE for this):
-
-```bash
-./mvnw spring-boot:run
-```
-
-> NOTE: If you prefer to use Gradle, you can build the app using `./gradlew build` and look for the jar file in `build/libs`.
 
 ## Building a Container
 
@@ -204,7 +188,7 @@ The following items should be installed in your system:
 
 ## Interesting Spring Petclinic branches and forks
 
-The Spring Petclinic "main" branch in the [spring-projects](https://github.com/spring-petclinic/quarkus-spring-petclinic)
+The Spring Petclinic "main" branch in the [spring-projects](https://github.com/spring-projects/spring-petclinic)
 GitHub org is the "canonical" implementation based on Spring Boot and Thymeleaf. There are
 [quite a few forks](https://spring-petclinic.github.io/docs/forks.html) in the GitHub org
 [spring-petclinic](https://github.com/spring-petclinic). If you are interested in using a different technology stack to implement the Pet Clinic, please join the community there.
