@@ -23,8 +23,12 @@ You can then access the Petclinic at <http://localhost:8080/>.
 
 > **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
 
-> NOTE: If you prefer to use Gradle, you can build the app using `./gradlew build` and look for the jar file in `build/libs`. 
-> For the moment, there is a bug in the `ResteasyReactiveProcessor` class that prevents the application from building with Gradle. 
+> NOTE: If you prefer to use Gradle, you can build the app using `./gradlew build` and look for the jar file in `build/libs`.
+
+In development mode, you can start Quarkus with debug mode enabled, listening on port 5005, without stopping the JVM:
+```shell script
+./gradlew --console=plain quarkusDev
+```
 
 ## Packaging and running the application
 

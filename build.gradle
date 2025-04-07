@@ -3,6 +3,7 @@ plugins {
     id 'io.quarkus'
     id 'org.cyclonedx.bom' version '1.10.0'
     id 'io.spring.javaformat' version '0.0.43'
+    id "io.spring.nohttp" version "0.0.11"
 }
 
 apply plugin: 'java'
@@ -22,15 +23,16 @@ repositories {
     mavenLocal()
 }
 
+ext.checkstyleVersion = "10.20.1"
+ext.springJavaformatCheckstyleVersion = "0.0.43"
 ext.webjarsFontawesomeVersion = "4.7.0"
 ext.webjarsBootstrapVersion = "5.3.3"
 
 dependencies {
-    implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
+  implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
   implementation 'io.quarkus:quarkus-narayana-jta'
   implementation 'io.quarkus:quarkus-spring-cache'
   implementation 'io.quarkus:quarkus-hibernate-validator'
-  implementation 'io.quarkus:quarkus-spring-data-rest'
   implementation 'io.quarkus:quarkus-spring-di'
   implementation 'io.quarkus:quarkus-spring-web'
   implementation 'io.quarkus:quarkus-spring-data-jpa'
@@ -49,6 +51,8 @@ dependencies {
   implementation 'io.quarkus:quarkus-jdbc-h2'
   implementation 'io.quarkus:quarkus-jdbc-postgresql'
   implementation 'io.quarkus:quarkus-jdbc-mysql'
+  checkstyle "io.spring.javaformat:spring-javaformat-checkstyle:${springJavaformatCheckstyleVersion}"
+  checkstyle "com.puppycrawl.tools:checkstyle:${checkstyleVersion}"
 }
 
 
@@ -63,3 +67,21 @@ compileJava {
 compileTestJava {
     options.encoding = 'UTF-8'
 }
+
+checkstyle {
+  configDirectory = project.file('src/checkstyle')
+  configFile = file('src/checkstyle/nohttp-checkstyle.xml')
+}
+
+checkstyleNohttp {
+  configDirectory = project.file('src/checkstyle')
+  configFile = file('src/checkstyle/nohttp-checkstyle.xml')
+}
+
+tasks.named("formatMain").configure { dependsOn("checkstyleMain") }
+tasks.named("formatMain").configure { dependsOn("checkstyleNohttp") }
+
+tasks.named("formatTest").configure { dependsOn("checkstyleTest") }
+tasks.named("formatTest").configure { dependsOn("checkstyleNohttp") }
+
+
