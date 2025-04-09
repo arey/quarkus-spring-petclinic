@@ -4,7 +4,7 @@
 
 This Spring Petclinic fork is a [Quarkus](https://quarkus.io/) application built using [Maven](https://spring.io/guides/gs/maven/) or [Gradle](https://spring.io/guides/gs/gradle/).
 This Quarkus application have been **created from a Spring Boot application**.
-It uses almost all the **Spring extensions provided by Quarkus** : **Spring DI**, **Spring Web**, **Spring Data JPA**, **Spring Cache** and **Spring Boot properties**.
+It uses almost all the **Spring extensions provided by Quarkus** : **Spring DI**, **Spring Web**, **Spring Data JPA** and **Spring Cache**.
 
 ## Running the application in dev mode
 
