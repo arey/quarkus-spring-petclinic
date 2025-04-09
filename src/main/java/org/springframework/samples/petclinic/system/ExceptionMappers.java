@@ -7,7 +7,7 @@ import org.jboss.logging.Logger;
 
 class ExceptionMappers {
 
-	private static final Logger LOG = Logger.getLogger(LocalDateParamConverter.class);
+	private static final Logger LOG = Logger.getLogger(ExceptionMappers.class);
 
 	private final Template error;
 
