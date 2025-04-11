@@ -123,13 +123,7 @@
       <scope>test</scope>
     </dependency>
 
-
     <!-- Webjars -->
-    <dependency>
-      <groupId>io.rest-assured</groupId>
-      <artifactId>rest-assured</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-web-dependency-locator</artifactId>
@@ -145,6 +139,12 @@
       <version>${webjars-font-awesome.version}</version>
     </dependency>
 
+    <!-- Third libraries -->
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
 
   </dependencies>
 
