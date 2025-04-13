@@ -61,7 +61,7 @@ export GRAALVM_HOME=$HOME/.sdkman/candidates/java/21.0.5-graal
 export PATH=${GRAALVM_HOME}/bin:$PATH
 ./mvnw package -Dnative -Dquarkus.profile=postgres
 docker compose up postgres 
-./target/quarkus-spring-petclinic-3.4.0-SNAPSHOT-runner
+./target/quarkus-spring-petclinic-*-runner
 ```
 
 H2 database native executable is not possible because of the limitation of Quarkus.
