@@ -11,7 +11,7 @@ apply plugin: 'checkstyle'
 apply plugin: 'io.spring.javaformat'
 
 group = 'org.springframework.samples'
-version = '3.21.0'
+version = '3.22.1'
 
 java {
   sourceCompatibility = JavaVersion.VERSION_17

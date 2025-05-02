@@ -25,24 +25,23 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import io.quarkus.test.InjectMock;
+import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledInNativeImage;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * Test class for {@link PetTypeFormatter}
  *
  * @author Colin But
  */
-@ExtendWith(MockitoExtension.class)
+@QuarkusTest
 @DisabledInNativeImage
 class PetTypeFormatterTests {
 
-	@Mock
+	@InjectMock
 	private PetTypeRepository pets;
 
 	private PetTypeFormatter petTypeFormatter;
