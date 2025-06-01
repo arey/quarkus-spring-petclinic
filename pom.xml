@@ -13,7 +13,7 @@
     <!-- Quarkus properties -->
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.22.1</quarkus.platform.version>
+    <quarkus.platform.version>3.23.0</quarkus.platform.version>
 
     <!-- Web dependencies -->
     <webjars-bootstrap.version>5.3.6</webjars-bootstrap.version>
