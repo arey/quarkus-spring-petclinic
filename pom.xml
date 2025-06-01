@@ -20,7 +20,7 @@
     <webjars-font-awesome.version>4.7.0</webjars-font-awesome.version>
 
     <!-- Maven plugins -->
-    <checkstyle.version>10.24.0</checkstyle.version>
+    <checkstyle.version>10.25.0</checkstyle.version>
     <compiler-plugin.version>3.14.0</compiler-plugin.version>
     <jacoco.version>0.8.13</jacoco.version>
     <libsass.version>0.3.4</libsass.version>
