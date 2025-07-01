@@ -16,7 +16,7 @@
     <quarkus.platform.version>3.23.0</quarkus.platform.version>
 
     <!-- Web dependencies -->
-    <webjars-bootstrap.version>5.3.6</webjars-bootstrap.version>
+    <webjars-bootstrap.version>5.3.7</webjars-bootstrap.version>
     <webjars-font-awesome.version>4.7.0</webjars-font-awesome.version>
 
     <!-- Maven plugins -->
