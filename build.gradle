@@ -26,7 +26,7 @@ repositories {
 ext.checkstyleVersion = "10.25.0"
 ext.springJavaformatCheckstyleVersion = "0.0.45"
 ext.webjarsFontawesomeVersion = "4.7.0"
-ext.webjarsBootstrapVersion = "5.3.6"
+ext.webjarsBootstrapVersion = "5.3.7"
 
 dependencies {
   implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
