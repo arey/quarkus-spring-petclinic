@@ -36,7 +36,7 @@
 
   <groupId>org.springframework.samples</groupId>
   <artifactId>quarkus-spring-petclinic</artifactId>
-  <version>3.22.1</version>
+  <version>3.24.1</version>
   <name>petclinic</name>
 
   <dependencyManagement>
