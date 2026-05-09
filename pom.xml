@@ -13,7 +13,7 @@
     <!-- Quarkus properties -->
     <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-    <quarkus.platform.version>3.31.1</quarkus.platform.version>
+    <quarkus.platform.version>3.32.4</quarkus.platform.version>
 
     <!-- Web dependencies -->
     <webjars-bootstrap.version>5.3.8</webjars-bootstrap.version>
@@ -182,7 +182,29 @@
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <maven.home>${maven.home}</maven.home>
           </systemPropertyVariables>
+          <!-- Exclude DB integration tests from the default run (they need isolated JVMs) -->
+          <excludes>
+            <exclude>**/*MySqlIntegrationTests.java</exclude>
+            <exclude>**/*PostgresIntegrationTests.java</exclude>
+          </excludes>
         </configuration>
+        <executions>
+          <!-- Run DB integration tests with isolated JVMs to prevent dev service URL leaking (Quarkus 3.32) -->
+          <execution>
+            <id>db-integration-tests</id>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>**/*MySqlIntegrationTests.java</include>
+                <include>**/*PostgresIntegrationTests.java</include>
+              </includes>
+              <excludes combine.self="override"/>
+              <reuseForks>false</reuseForks>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-failsafe-plugin</artifactId>

@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 import io.quarkus.test.TestTransaction;
-import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.WithTestResource;
 import io.quarkus.test.h2.H2DatabaseTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
@@ -65,7 +65,7 @@ import static org.hamcrest.Matchers.equalTo;
  * @author Dave Syer
  */
 @QuarkusTest
-@QuarkusTestResource(H2DatabaseTestResource.class)
+@WithTestResource(H2DatabaseTestResource.class)
 class ClinicServiceTests {
 
 	@Autowired
