@@ -1,13 +1,13 @@
-INSERT IGNORE INTO vets (first_name, last_name)  VALUES (1, 'James', 'Carter');
-INSERT IGNORE INTO vets (first_name, last_name)  VALUES (2, 'Helen', 'Leary');
-INSERT IGNORE INTO vets (first_name, last_name)  VALUES (3, 'Linda', 'Douglas');
-INSERT IGNORE INTO vets (first_name, last_name)  VALUES (4, 'Rafael', 'Ortega');
-INSERT IGNORE INTO vets (first_name, last_name)  VALUES (5, 'Henry', 'Stevens');
-INSERT IGNORE INTO vets (first_name, last_name)  VALUES (6, 'Sharon', 'Jenkins');
+INSERT IGNORE INTO vets (id, first_name, last_name)  VALUES (1, 'James', 'Carter');
+INSERT IGNORE INTO vets (id, first_name, last_name)  VALUES (2, 'Helen', 'Leary');
+INSERT IGNORE INTO vets (id, first_name, last_name)  VALUES (3, 'Linda', 'Douglas');
+INSERT IGNORE INTO vets (id, first_name, last_name)  VALUES (4, 'Rafael', 'Ortega');
+INSERT IGNORE INTO vets (id, first_name, last_name)  VALUES (5, 'Henry', 'Stevens');
+INSERT IGNORE INTO vets (id, first_name, last_name)  VALUES (6, 'Sharon', 'Jenkins');
 
-INSERT IGNORE INTO specialties (name) VALUES (1, 'radiology');
-INSERT IGNORE INTO specialties (name) VALUES (2, 'surgery');
-INSERT IGNORE INTO specialties (name) VALUES (3, 'dentistry');
+INSERT IGNORE INTO specialties (id, name) VALUES (1, 'radiology');
+INSERT IGNORE INTO specialties (id, name) VALUES (2, 'surgery');
+INSERT IGNORE INTO specialties (id, name) VALUES (3, 'dentistry');
 
 INSERT IGNORE INTO vet_specialties VALUES (2, 1);
 INSERT IGNORE INTO vet_specialties VALUES (3, 2);
@@ -47,7 +47,7 @@ INSERT IGNORE INTO pets (id, name, birth_date, type_id, owner_id)  VALUES (11, '
 INSERT IGNORE INTO pets (id, name, birth_date, type_id, owner_id)  VALUES (12, 'Lucky', '2000-06-24', 2, 10);
 INSERT IGNORE INTO pets (id, name, birth_date, type_id, owner_id)  VALUES (13, 'Sly', '2002-06-08', 1, 10);
 
-INSERT IGNORE INSTO visits (pet_id, visit_date, description)  VALUES (1, 7, '2010-03-04', 'rabies shot');
-INSERT IGNORE INSTO visits (pet_id, visit_date, description)  VALUES (2, 8, '2011-03-04', 'rabies shot');
-INSERT IGNORE INSTO visits (pet_id, visit_date, description)  VALUES (3, 8, '2009-06-04', 'neutered');
-INSERT IGNORE INSTO visits (pet_id, visit_date, description)  VALUES (4, 7, '2008-09-04', 'spayed');
+INSERT IGNORE INTO visits (id, pet_id, visit_date, description)  VALUES (1, 7, '2010-03-04', 'rabies shot');
+INSERT IGNORE INTO visits (id, pet_id, visit_date, description)  VALUES (2, 8, '2011-03-04', 'rabies shot');
+INSERT IGNORE INTO visits (id, pet_id, visit_date, description)  VALUES (3, 8, '2009-06-04', 'neutered');
+INSERT IGNORE INTO visits (id, pet_id, visit_date, description)  VALUES (4, 7, '2008-09-04', 'spayed');
