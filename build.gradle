@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'io.quarkus'
-    id 'org.cyclonedx.bom' version '3.4.1'
+    id 'org.cyclonedx.bom' version '3.5.1'
     id 'io.spring.javaformat' version '0.0.48'
     id "io.spring.nohttp" version "0.0.11"
 }
@@ -24,7 +24,7 @@ repositories {
 }
 
 ext.checkstyleVersion = "12.3.1"
-ext.springJavaformatCheckstyleVersion = "0.0.47"
+ext.springJavaformatCheckstyleVersion = "0.0.48"
 ext.webjarsFontawesomeVersion = "4.7.0"
 ext.webjarsBootstrapVersion = "5.3.8"
 
@@ -43,8 +43,8 @@ dependencies {
   implementation 'io.quarkus:quarkus-web-dependency-locator'
   runtimeOnly "org.webjars.npm:bootstrap:${webjarsBootstrapVersion}"
   runtimeOnly "org.webjars.npm:font-awesome:${webjarsFontawesomeVersion}"
-  testImplementation 'io.quarkus:quarkus-junit5'
-  testImplementation 'io.quarkus:quarkus-junit5-mockito'
+  testImplementation 'io.quarkus:quarkus-junit'
+  testImplementation 'io.quarkus:quarkus-junit-mockito'
   testImplementation 'io.quarkus:quarkus-test-h2'
   testImplementation 'io.rest-assured:rest-assured'
   implementation 'io.quarkus:quarkus-jdbc-h2'
@@ -57,6 +57,24 @@ dependencies {
 
 test {
     systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+    systemProperty "user.language", "en"
+    systemProperty "user.country", "US"
+    exclude '**/*MySqlIntegrationTests*', '**/*PostgresIntegrationTests*'
+}
+
+tasks.register('dbIntegrationTest', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+    systemProperty "user.language", "en"
+    systemProperty "user.country", "US"
+    include '**/*MySqlIntegrationTests*', '**/*PostgresIntegrationTests*'
+    forkEvery = 1
+    shouldRunAfter test
+}
+
+tasks.named('check') {
+    dependsOn 'dbIntegrationTest'
 }
 compileJava {
     options.encoding = 'UTF-8'
@@ -82,5 +100,3 @@ tasks.named("formatMain").configure { dependsOn("checkstyleNohttp") }
 
 tasks.named("formatTest").configure { dependsOn("checkstyleTest") }
 tasks.named("formatTest").configure { dependsOn("checkstyleNohttp") }
-
-
