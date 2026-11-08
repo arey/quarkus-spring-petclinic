@@ -6,9 +6,20 @@ updates:
       interval: "monthly"
     labels:
       - "dependencies"
+    ignore:
+      # Checkstyle 13+ requires Java 21
+      - dependency-name: "com.puppycrawl.tools:checkstyle"
+        versions:
+          - ">= 13.0.0"
   - package-ecosystem: "gradle"
     directory: "/"
     schedule:
       interval: "monthly"
     labels:
       - "dependencies"
+    ignore:
+      # Checkstyle 13+ requires Java 21
+      - dependency-name: "com.puppycrawl.tools:checkstyle"
+        versions:
+          - ">= 13.0.0"
+
